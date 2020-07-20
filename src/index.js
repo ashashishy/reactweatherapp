@@ -1,16 +1,34 @@
 import React from 'react';
 import ReactDom from 'react-dom';
-import Comment from './Comment'
-import ApprovalCard from './ApprovalCard'
-const App=()=>{
-    return (
-    <div className="ui container comments">
-    <ApprovalCard ><Comment author="Sam" comment="New blog comment" /></ApprovalCard>
-    
-    <ApprovalCard ><Comment author="Jam" comment="newer blog comment" /></ApprovalCard>
-    <ApprovalCard ><Comment author="Lam" comment="Newest blog comment" /></ApprovalCard>
-    </div>
+
+class App extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state={
+            lat:null,
+            errorMessage:''   
+        };
+    window.navigator.geolocation.getCurrentPosition(
+        position=> {
+            this.setState({lat:position.coords.latitude});
+        }, 
+        err=> {
+            this.setState({errorMessage:err.message});
+        }
     );
+    }   
+    render(){
+       if(!this.state.lat && this.state.errorMessage){
+           return <div>Error:{this.state.errorMessage}</div>
+       }
+       else if(this.state.lat && !this.state.errorMessage){
+           return <div>Latitude:{this.state.lat}</div>
+       }
+       else {
+           return <div>Loading...</div>
+       }
+    }
 }
+
 
 ReactDom.render(<App />, document.getElementById('root')); 
